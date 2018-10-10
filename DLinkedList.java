@@ -3,7 +3,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
-public class DLinkedList implements List {
+public class DLinkedList implements List, IList {
 
     //delete unnecessary methods
 
@@ -85,6 +85,131 @@ public class DLinkedList implements List {
     @Override
     public int lastIndexOf(Object o) {
         return 0;
+    }
+
+    @Override
+    public boolean checkMembership(ListItem item) {
+        return false;
+    }
+
+    @Override
+    public ListItem head() {
+        return null;
+    }
+
+    @Override
+    public ListItem tail() {
+        return null;
+    }
+
+    @Override
+    public ListItem next(ListItem item) {
+        return null;
+    }
+
+    @Override
+    public ListItem previous(ListItem item) {
+        return null;
+    }
+
+    @Override
+    public ListItem cyclicNext(ListItem item) {
+        return null;
+    }
+
+    @Override
+    public ListItem cyclicPrevious(ListItem item) {
+        return null;
+    }
+
+    @Override
+    public ListItem delete(ListItem item, boolean next) {
+        return null;
+    }
+
+    @Override
+    public ListItem cyclicDelete(ListItem item, boolean next) {
+        return null;
+    }
+
+    @Override
+    public Object get(ListItem item) {
+        return null;
+    }
+
+    @Override
+    public void set(ListItem item, Object data) {
+
+    }
+
+    @Override
+    public Object remove(ListItem item) {
+        return null;
+    }
+
+    @Override
+    public ListItem addHead(Object data) {
+        return null;
+    }
+
+    @Override
+    public ListItem addTail(Object data) {
+        return null;
+    }
+
+    @Override
+    public ListItem addAfter(ListItem item, Object data) {
+        return null;
+    }
+
+    @Override
+    public ListItem addBefore(ListItem item, Object data) {
+        return null;
+    }
+
+    @Override
+    public void moveToHead(ListItem item) {
+
+    }
+
+    @Override
+    public void moveToTail(ListItem item) {
+
+    }
+
+    @Override
+    public void rotate(ListItem item) {
+
+    }
+
+    @Override
+    public void swap(ListItem item1, ListItem item2) {
+
+    }
+
+    @Override
+    public void reverse() {
+
+    }
+
+    @Override
+    public void addAfter(ListItem item, List list) {
+
+    }
+
+    @Override
+    public void addBefore(ListItem item, List list) {
+
+    }
+
+    @Override
+    public void conc(List list, boolean after) {
+
+    }
+
+    @Override
+    public IList remove(ListItem startInclusive, ListItem endExclusive) {
+        return null;
     }
 
     @Override
