@@ -1,5 +1,3 @@
-package algd2.exercise3;
-
 import static org.junit.Assert.*;
 
 import java.util.LinkedList;

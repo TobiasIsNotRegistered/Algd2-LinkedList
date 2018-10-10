@@ -1,11 +1,10 @@
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
+import java.util.*;
 
-public class DLinkedList implements List, IList {
+public class DLinkedList extends AbstractList implements List, IList {
 
     //delete unnecessary methods
+    // (addAfter(…), addBefore(…)), bestehende löschen (remove(…),
+    //delete(…))
 
     @Override
     public int size() {
@@ -55,6 +54,16 @@ public class DLinkedList implements List, IList {
     @Override
     public void clear() {
 
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return 0;
     }
 
     @Override
