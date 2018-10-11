@@ -1,99 +1,27 @@
 import java.util.*;
 
-public class DLinkedList extends AbstractList implements List, IList {
+public class DLinkedList<E> extends AbstractList<E> implements List<E>, IList<E> {
 
-    //delete unnecessary methods
-    // (addAfter(…), addBefore(…)), bestehende löschen (remove(…),
-    //delete(…))
+    ListItem list_head, list_tail;
+    int size;
 
-    @Override
-    public int size() {
-        return 0;
-    }
 
-    @Override
-    public boolean isEmpty() {
-        return false;
-    }
-
-    @Override
-    public boolean contains(Object o) {
-        return false;
-    }
-
-    @Override
-    public Iterator iterator() {
-        return null;
-    }
-
-    @Override
-    public Object[] toArray() {
-        return new Object[0];
-    }
-
-    @Override
-    public boolean add(Object o) {
-        return false;
-    }
-
-    @Override
-    public boolean remove(Object o) {
-        return false;
-    }
-
-    @Override
-    public boolean addAll(Collection c) {
-        return false;
-    }
-
-    @Override
-    public boolean addAll(int index, Collection c) {
-        return false;
-    }
-
-    @Override
-    public void clear() {
+    public DLinkedList () {
 
     }
 
     @Override
-    public boolean equals(Object o) {
-        return false;
-    }
+    public void add(int index, E data) {
+        ListItem newListItem = new ListItem(data);
 
-    @Override
-    public int hashCode() {
-        return 0;
-    }
-
-    @Override
-    public Object get(int index) {
-        return null;
-    }
-
-    @Override
-    public Object set(int index, Object element) {
-        return null;
-    }
-
-    @Override
-    public void add(int index, Object element) {
-
-    }
-
-    @Override
-    public Object remove(int index) {
-        return null;
-    }
-
-    @Override
-    public int indexOf(Object o) {
-        return 0;
-    }
-
-    @Override
-    public int lastIndexOf(Object o) {
-        return 0;
+        if(this.size == 0){
+            list_head = list_tail = newListItem;
+        }else{
+            newListItem.previousItem = list_tail;
+            list_tail.nextItem = newListItem;
+            this.list_tail = newListItem;
+        }
+        this.size++;
     }
 
     @Override
@@ -142,37 +70,37 @@ public class DLinkedList extends AbstractList implements List, IList {
     }
 
     @Override
-    public Object get(ListItem item) {
+    public E get(ListItem item) {
         return null;
     }
 
     @Override
-    public void set(ListItem item, Object data) {
+    public void set(ListItem item, E data) {
 
     }
 
     @Override
-    public Object remove(ListItem item) {
+    public E remove(ListItem item) {
         return null;
     }
 
     @Override
-    public ListItem addHead(Object data) {
+    public ListItem addHead(E data) {
         return null;
     }
 
     @Override
-    public ListItem addTail(Object data) {
+    public ListItem addTail(E data) {
         return null;
     }
 
     @Override
-    public ListItem addAfter(ListItem item, Object data) {
+    public ListItem addAfter(ListItem item, E data) {
         return null;
     }
 
     @Override
-    public ListItem addBefore(ListItem item, Object data) {
+    public ListItem addBefore(ListItem item, E data) {
         return null;
     }
 
@@ -202,57 +130,135 @@ public class DLinkedList extends AbstractList implements List, IList {
     }
 
     @Override
-    public void addAfter(ListItem item, List list) {
+    public void addAfter(ListItem item, List<E> list) {
 
     }
 
     @Override
-    public void addBefore(ListItem item, List list) {
+    public void addBefore(ListItem item, List<E> list) {
 
     }
 
     @Override
-    public void conc(List list, boolean after) {
+    public void conc(List<E> list, boolean after) {
 
     }
 
     @Override
-    public IList remove(ListItem startInclusive, ListItem endExclusive) {
+    public IList<E> remove(ListItem startInclusive, ListItem endExclusive) {
         return null;
     }
 
     @Override
-    public ListIterator listIterator() {
+    public IListIterator<E> listIterator() {
         return null;
     }
 
     @Override
-    public ListIterator listIterator(int index) {
+    public IListIterator<E> listIterator(int index) {
         return null;
     }
 
     @Override
-    public List subList(int fromIndex, int toIndex) {
-        return null;
+    public int size() {
+        return 0;
     }
 
     @Override
-    public boolean retainAll(Collection c) {
+    public boolean isEmpty() {
         return false;
     }
 
     @Override
-    public boolean removeAll(Collection c) {
+    public boolean contains(Object o) {
         return false;
     }
 
     @Override
-    public boolean containsAll(Collection c) {
-        return false;
+    public Iterator<E> iterator() {
+        return null;
     }
 
     @Override
-    public Object[] toArray(Object[] a) {
+    public Object[] toArray() {
         return new Object[0];
     }
+
+    @Override
+    public <T> T[] toArray(T[] a) {
+        return null;
+    }
+
+    @Override
+    public boolean add(E e) {
+        return false;
+    }
+
+    @Override
+    public boolean remove(Object o) {
+        return false;
+    }
+
+    @Override
+    public boolean containsAll(Collection<?> c) {
+        return false;
+    }
+
+    @Override
+    public boolean addAll(Collection<? extends E> c) {
+        return false;
+    }
+
+    @Override
+    public boolean addAll(int index, Collection<? extends E> c) {
+        return false;
+    }
+
+    @Override
+    public boolean removeAll(Collection<?> c) {
+        return false;
+    }
+
+    @Override
+    public boolean retainAll(Collection<?> c) {
+        return false;
+    }
+
+    @Override
+    public void clear() {
+
+    }
+
+    @Override
+    public E get(int index) {
+        return null;
+    }
+
+    @Override
+    public E set(int index, E element) {
+        return null;
+    }
+
+    @Override
+    public E remove(int index) {
+        return null;
+    }
+
+    @Override
+    public int indexOf(Object o) {
+        return 0;
+    }
+
+    @Override
+    public int lastIndexOf(Object o) {
+        return 0;
+    }
+
+    @Override
+    public List<E> subList(int fromIndex, int toIndex) {
+        return null;
+    }
 }
+
+
+

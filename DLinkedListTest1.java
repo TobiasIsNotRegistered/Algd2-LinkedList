@@ -7,8 +7,6 @@ import java.util.ListIterator;
 import org.junit.Before;
 import org.junit.Test;
 
-import algd2.Clock;
-
 public class DLinkedListTest1 {
 	private final int Size = 10000000;
 	private IList<Integer> list1;
