@@ -26,42 +26,88 @@ public class DLinkedList<E> extends AbstractList<E> implements List<E>, IList<E>
 
     @Override
     public boolean checkMembership(ListItem item) {
-        return false;
+        return item.parentList == this;
     }
 
     @Override
     public ListItem head() {
-        return null;
+        return list_head;
     }
 
     @Override
     public ListItem tail() {
-        return null;
+        return list_tail;
     }
 
     @Override
     public ListItem next(ListItem item) {
-        return null;
+        return item.nextItem;
     }
 
     @Override
     public ListItem previous(ListItem item) {
-        return null;
+        return item.previousItem;
     }
 
     @Override
     public ListItem cyclicNext(ListItem item) {
-        return null;
+        ListItem result = null;
+        //check if item exists in list (stated as precondition in iList)
+        if(get(item) != null){
+            result = item.nextItem;
+            //check if nextItem exists (won't if item = tail). If not, set nextItem to head (cyclic behaviour).
+            if(result == null){
+                result = this.list_head;
+            }
+        }else{
+            throw new NoSuchElementException();
+        }
+        return result;
     }
 
     @Override
     public ListItem cyclicPrevious(ListItem item) {
-        return null;
+        ListItem result = null;
+        //check if item exists in list (stated as precondition in iList)
+        if(get(item) != null){
+            result = item.previousItem;
+            //check if previousItem exists (won't if item = head). If not, set nextItem to tail (cyclic behaviour).
+            if(result == null){
+                result = this.list_tail;
+            }
+        }else{
+            throw new NoSuchElementException();
+        }
+        return result;
     }
 
+    /**
+     * Deletes item while iterating.
+	 * If next = true: returns successor of item or null if item is the last.
+            * If next = false: returns predecessor of item or null if item is the first.
+            * Precondition: item is in this list
+     * */
     @Override
     public ListItem delete(ListItem item, boolean next) {
-        return null;
+        //save pointers to be able to use them after the deletion of the item
+        ListItem temp_nextItem = item.nextItem;
+        ListItem temp_previousItem = item.previousItem;
+        //check precondition
+        if(get(item) == null){throw new NoSuchElementException();
+        }else{
+            //swap pointers of previous & next Item
+            item.previousItem.nextItem = item.nextItem;
+            item.nextItem.previousItem = item.previousItem;
+            //mark the item as null for GC
+            item = null;
+        }
+
+        if(next){
+            return temp_nextItem;
+        }else{
+            return  temp_previousItem;
+        }
+
     }
 
     @Override
