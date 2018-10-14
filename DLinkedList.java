@@ -9,9 +9,11 @@ public class DLinkedList<E> extends AbstractList<E> implements List<E>, IList<E>
     public DLinkedList () {
 
     }
+    
 
     @Override
     public void add(int index, E data) {
+    	
         ListItem newListItem = new ListItem(data);
 
         if(this.size == 0){
@@ -196,8 +198,11 @@ public class DLinkedList<E> extends AbstractList<E> implements List<E>, IList<E>
     }
 
     @Override
+    /**
+     * Returns iterator corresponding to the DLinkedList
+     */
     public IListIterator<E> listIterator() {
-        return null;
+        return new DIterator<E>();
     }
 
     @Override

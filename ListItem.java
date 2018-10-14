@@ -1,11 +1,11 @@
 public class ListItem {
 
     ListItem nextItem, previousItem;
-    Object data;
+    Object m_data;
 
     DLinkedList parentList;
 
     public ListItem(Object data){
-        this.data = data;
+        this.m_data = data;
     }
 }

@@ -1,8 +1,15 @@
 import java.util.ConcurrentModificationException;
 
+
 public class DIterator<E> implements IListIterator<E> {
 
-
+	private ListItem m_returned;
+	private ListItem m_next;
+	private ListItem m_previous;
+	private int m_index;
+	private int m_curModCount;
+	
+	
     @Override
     public ListItem getVisited() {
         return null;
@@ -45,7 +52,7 @@ public class DIterator<E> implements IListIterator<E> {
             throw new IllegalStateException();
         } else {
             if (m_returned == m_next) {
-                m_next = m_returned.m_next;
+                m_next = m_returned.nextItem;
             } else {
                 m_index--;
             }
@@ -56,7 +63,7 @@ public class DIterator<E> implements IListIterator<E> {
     }
 
     @Override
-    public void set(E o) {
+    public void set(E data) {
         if (m_returned == null) {
             throw new IllegalStateException();
         } else {
