@@ -2,7 +2,7 @@ import java.util.*;
 
 public class DLinkedList<E> extends AbstractList<E> implements List<E>, IList<E> {
 
-    ListItem list_head, list_tail;
+    ListItem<E> list_head, list_tail;
     int size;
 
 
@@ -13,7 +13,6 @@ public class DLinkedList<E> extends AbstractList<E> implements List<E>, IList<E>
 
     @Override
     public void add(int index, E data) {
-    	
         ListItem newListItem = new ListItem(data);
 
         if(this.size == 0){
@@ -129,7 +128,9 @@ public class DLinkedList<E> extends AbstractList<E> implements List<E>, IList<E>
 
     @Override
     public E remove(ListItem item) {
-        return null;
+    	modCount++;
+    	ListItem<E> help = delete(item, true);
+        return help.m_data;
     }
 
     @Override
@@ -144,7 +145,17 @@ public class DLinkedList<E> extends AbstractList<E> implements List<E>, IList<E>
 
     @Override
     public ListItem addAfter(ListItem item, E data) {
-        return null;
+
+    	modCount++;
+    	if(get(item) != null) {
+    		ListItem newElement = new ListItem(data);
+    		newElement.nextItem = item.nextItem;
+    		newElement.previousItem = item;
+    		item.nextItem = newElement;
+    		return newElement;
+    	} else {
+    		return addTail(data);
+    	}
     }
 
     @Override
@@ -199,7 +210,7 @@ public class DLinkedList<E> extends AbstractList<E> implements List<E>, IList<E>
 
     @Override
     /**
-     * Returns iterator corresponding to the DLinkedList
+     * Returns the iterator corresponding to the DLinkedList
      */
     public IListIterator<E> listIterator() {
         return new DIterator<E>();
@@ -309,7 +320,115 @@ public class DLinkedList<E> extends AbstractList<E> implements List<E>, IList<E>
     public List<E> subList(int fromIndex, int toIndex) {
         return null;
     }
+    
+    /*
+     * DIterator class in DLinkedList class
+     */
+    public class DIterator<E> implements IListIterator<E> {
+
+    	private ListItem<E> m_returned;
+    	private ListItem<E> m_next;
+    	private ListItem<E> m_previous;
+    	private int m_index;
+    	private int m_curModCount;
+    	
+    	
+        @Override
+        public ListItem getVisited() {
+        	if(m_next != null || m_previous !=null) {
+        		return m_returned;
+        	} else {
+        		throw new IllegalStateException(); 
+            }
+        }
+
+        @Override
+        public boolean hasNext() {
+        	if(m_next != null) {
+        		return true;
+        	} else {
+        		return false;
+        	}
+        }
+
+        @Override
+        public E next() {
+        	m_index++;
+        	m_previous = m_returned;
+        	m_returned = m_next;
+        	m_next = m_returned.nextItem;
+            return m_returned.m_data;
+        }
+
+        @Override
+        public boolean hasPrevious() {
+        	if(m_previous != null) {
+        		return true;
+        	} else {
+        		return false;
+        	}
+        }
+
+        @Override
+        public E previous() {           
+            m_index--;
+        	m_next = m_returned;
+        	m_returned = m_previous;
+        	m_previous = m_returned.previousItem;
+            return m_returned.m_data;
+        }
+
+        @Override
+        public int nextIndex() {
+        	if(m_index == size) {
+        		return size;
+        	}
+            return m_index +1;
+        }
+
+        @Override
+        public int previousIndex() {
+        	if(m_index == 0) {
+        		return -1;
+        	}
+            return m_index -1;
+        }
+
+        @Override
+        public void remove() {
+            if (m_curModCount != modCount) throw new ConcurrentModificationException();
+            if (m_returned == null) {
+                throw new IllegalStateException();
+            } else {
+                if (m_returned == m_next) {
+                    m_next = m_returned.nextItem;
+                } else {
+                    m_index--;
+                }
+                DLinkedList.this.remove(m_returned);
+                m_returned = null;
+                m_curModCount++;
+            }
+        }
+
+        @Override
+        public void set(E data) {
+            if (m_returned == null) {
+                throw new IllegalStateException();
+            } else {
+                m_returned.m_data = data;
+            }
+        }
+
+        @Override
+        public void add(E o) {
+        	if (m_curModCount != modCount) throw new ConcurrentModificationException();
+              
+                m_index++;
+                m_next = DLinkedList.this.addAfter(m_previous, o);
+                m_curModCount++; 
+        }
+    }
+
+    
 }
-
-
-
