@@ -332,8 +332,18 @@ public class DLinkedList<E> extends AbstractList<E> implements List<E>, IList<E>
     	private int m_index;
     	private int m_curModCount;
     	
+    	    	
     	
-        @Override
+        public DIterator() {
+			super();
+			this.m_returned = (ListItem<E>) list_head;
+			this.m_next = m_returned;
+			this.m_previous = null;
+			this.m_index = 0;
+			this.m_curModCount = modCount;
+		}
+
+		@Override
         public ListItem getVisited() {
         	if(m_next != null || m_previous !=null) {
         		return m_returned;
