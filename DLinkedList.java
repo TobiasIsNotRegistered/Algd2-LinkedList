@@ -160,7 +160,15 @@ public class DLinkedList<E> extends AbstractList<E> implements List<E>, IList<E>
 
     @Override
     public ListItem addBefore(ListItem item, E data) {
-        return null;
+    	if(get(item) != null) {
+    		ListItem newElement = new ListItem(data);
+    		newElement.previousItem = item.previousItem;
+    		newElement.nextItem = item;
+    		item.previousItem = newElement;
+    		return newElement;
+    	} else {
+    		return addHead(data);
+    	}
     }
 
     @Override
