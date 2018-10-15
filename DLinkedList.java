@@ -123,7 +123,7 @@ public class DLinkedList<E> extends AbstractList<E> implements List<E>, IList<E>
 
     @Override
     public void set(ListItem item, E data) {
-
+    	item.m_data = data;
     }
 
     @Override
@@ -135,12 +135,20 @@ public class DLinkedList<E> extends AbstractList<E> implements List<E>, IList<E>
 
     @Override
     public ListItem addHead(E data) {
-        return null;
+    	ListItem<E> newElement = new ListItem<E>(data);
+    	newElement.nextItem = list_head;
+    	list_head.previousItem = newElement;
+    	list_head = newElement;
+        return newElement;
     }
 
     @Override
     public ListItem addTail(E data) {
-        return null;
+    	ListItem<E> newElement = new ListItem<E>(data);
+    	newElement.previousItem = list_tail;
+    	list_tail.nextItem = newElement;
+    	list_tail = newElement;
+        return newElement;
     }
 
     @Override
@@ -173,12 +181,24 @@ public class DLinkedList<E> extends AbstractList<E> implements List<E>, IList<E>
 
     @Override
     public void moveToHead(ListItem item) {
-
+    	if(item.parentList == this) {
+    		item.previousItem.nextItem = item.nextItem;
+    		item.nextItem.previousItem = item.previousItem;
+    		item.nextItem = list_head;
+    		list_head.previousItem = item;
+    		list_head = item;
+    	}
     }
 
     @Override
     public void moveToTail(ListItem item) {
-
+    	if(item.parentList == this) {
+    		item.previousItem.nextItem = item.nextItem;
+    		item.nextItem.previousItem = item.previousItem;
+    		item.previousItem = list_tail;
+    		list_tail.nextItem = item;
+    		list_tail = item;
+    	}
     }
 
     @Override
