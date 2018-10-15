@@ -92,6 +92,7 @@ public class DLinkedList<E> extends AbstractList<E> implements List<E>, IList<E>
     @Override
     public ListItem delete(ListItem item, boolean next) {
         //save pointers to be able to use them after the deletion of the item
+    	modCount ++;
         ListItem temp_nextItem = item.nextItem;
         ListItem temp_previousItem = item.previousItem;
         //check precondition
@@ -146,7 +147,6 @@ public class DLinkedList<E> extends AbstractList<E> implements List<E>, IList<E>
 
     @Override
     public E remove(ListItem item) {
-    	modCount++;
     	ListItem<E> help = delete(item, true);
         return help.m_data;
     }
@@ -174,12 +174,12 @@ public class DLinkedList<E> extends AbstractList<E> implements List<E>, IList<E>
     @Override
     public ListItem addAfter(ListItem item, E data) {
 
-    	modCount++;
     	if(get(item) != null) {
     		ListItem<E> newElement = new ListItem<E>(data);
     		newElement.nextItem = item.nextItem;
     		newElement.previousItem = item;
     		item.nextItem = newElement;
+        	modCount++;
     		return newElement;
     	} else {
     		return addTail(data);
@@ -188,13 +188,14 @@ public class DLinkedList<E> extends AbstractList<E> implements List<E>, IList<E>
 
     @Override
     public ListItem addBefore(ListItem item, E data) {
-    	modCount++;
+    	
     	if(get(item) != null) {
     		ListItem newElement = new ListItem(data);
     		newElement.previousItem = item.previousItem;
     		newElement.nextItem = item;
     		item.previousItem = newElement;
     		return newElement;
+    		modCount++;
     	} else {
     		return addHead(data);
     	}
