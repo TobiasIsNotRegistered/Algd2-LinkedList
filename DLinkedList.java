@@ -13,6 +13,7 @@ public class DLinkedList<E> extends AbstractList<E> implements List<E>, IList<E>
 
     @Override
     public void add(int index, E data) {
+    	modCount++;
         ListItem newListItem = new ListItem(data);
 
         if(this.size == 0){
@@ -113,7 +114,24 @@ public class DLinkedList<E> extends AbstractList<E> implements List<E>, IList<E>
 
     @Override
     public ListItem cyclicDelete(ListItem item, boolean next) {
-        return null;
+    	 //save pointers to be able to use them after the deletion of the item
+        ListItem temp_nextItem = cyclicNext(item);
+        ListItem temp_previousItem = cyclicPrevious(item);
+        //check precondition
+        if(get(item) == null){throw new NoSuchElementException();
+        }else{
+            //swap pointers of previous & next Item
+            item.previousItem.nextItem = item.nextItem;
+            item.nextItem.previousItem = item.previousItem;
+            //mark the item as null for GC
+            item = null;
+        }
+
+        if(next){
+            return temp_nextItem;
+        }else{
+            return  temp_previousItem;
+        }
     }
 
     @Override
@@ -135,6 +153,7 @@ public class DLinkedList<E> extends AbstractList<E> implements List<E>, IList<E>
 
     @Override
     public ListItem addHead(E data) {
+    	modCount++;
     	ListItem<E> newElement = new ListItem<E>(data);
     	newElement.nextItem = list_head;
     	list_head.previousItem = newElement;
@@ -144,6 +163,7 @@ public class DLinkedList<E> extends AbstractList<E> implements List<E>, IList<E>
 
     @Override
     public ListItem addTail(E data) {
+    	modCount++;
     	ListItem<E> newElement = new ListItem<E>(data);
     	newElement.previousItem = list_tail;
     	list_tail.nextItem = newElement;
@@ -156,7 +176,7 @@ public class DLinkedList<E> extends AbstractList<E> implements List<E>, IList<E>
 
     	modCount++;
     	if(get(item) != null) {
-    		ListItem newElement = new ListItem(data);
+    		ListItem<E> newElement = new ListItem<E>(data);
     		newElement.nextItem = item.nextItem;
     		newElement.previousItem = item;
     		item.nextItem = newElement;
@@ -168,6 +188,7 @@ public class DLinkedList<E> extends AbstractList<E> implements List<E>, IList<E>
 
     @Override
     public ListItem addBefore(ListItem item, E data) {
+    	modCount++;
     	if(get(item) != null) {
     		ListItem newElement = new ListItem(data);
     		newElement.previousItem = item.previousItem;
@@ -181,6 +202,7 @@ public class DLinkedList<E> extends AbstractList<E> implements List<E>, IList<E>
 
     @Override
     public void moveToHead(ListItem item) {
+    	modCount++;
     	if(item.parentList == this) {
     		item.previousItem.nextItem = item.nextItem;
     		item.nextItem.previousItem = item.previousItem;
@@ -192,6 +214,7 @@ public class DLinkedList<E> extends AbstractList<E> implements List<E>, IList<E>
 
     @Override
     public void moveToTail(ListItem item) {
+    	modCount++;
     	if(item.parentList == this) {
     		item.previousItem.nextItem = item.nextItem;
     		item.nextItem.previousItem = item.previousItem;
@@ -246,17 +269,23 @@ public class DLinkedList<E> extends AbstractList<E> implements List<E>, IList<E>
 
     @Override
     public IListIterator<E> listIterator(int index) {
-        return null;
+    	DIterator<E> it = new DIterator<E>();
+    	it.m_index = index;
+        return it;
     }
 
     @Override
     public int size() {
-        return 0;
+        return size;
     }
 
     @Override
     public boolean isEmpty() {
-        return false;
+    	if(size == 0) {
+    		return true;
+    	} else {
+    		return false;
+    	}
     }
 
     @Override
@@ -266,7 +295,7 @@ public class DLinkedList<E> extends AbstractList<E> implements List<E>, IList<E>
 
     @Override
     public Iterator<E> iterator() {
-        return null;
+        return this.listIterator();
     }
 
     @Override
@@ -434,6 +463,7 @@ public class DLinkedList<E> extends AbstractList<E> implements List<E>, IList<E>
 
         @Override
         public void remove() {
+        	//checks if Iterator still useful is
             if (m_curModCount != modCount) throw new ConcurrentModificationException();
             if (m_returned == null) {
                 throw new IllegalStateException();
