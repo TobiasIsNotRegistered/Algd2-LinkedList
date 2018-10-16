@@ -284,6 +284,7 @@ public class DLinkedList<E> extends AbstractList<E> implements List<E>, IList<E>
     @Override
     public void swap(ListItem item1, ListItem item2) {
     	ListItem<E> temp = null;
+    	//TODO change pointer to new objects
     	temp = item1;
     	item1 = item2;
     	item2 = temp;
@@ -294,15 +295,15 @@ public class DLinkedList<E> extends AbstractList<E> implements List<E>, IList<E>
     	ListItem<E> temp = null;
     	ListItem<E> current = list_head;
     	
-    	while(current != null) {
-    		temp =current.getPreviousItem();
-    		current.getPreviousItem() =current.getNextItem();
-    		current.getNextItem() = temp;
-    		current =current.getPreviousItem();
-    	}
-    	if(temp != null) {
-    		list_head =temp.getPreviousItem();
-    	}
+//    	while(current != null) {
+//    		temp =current.getPreviousItem();
+//    		current.getPreviousItem() =current.getNextItem();
+//    		current.getNextItem() = temp;
+//    		current =current.getPreviousItem();
+//    	}
+//    	if(temp != null) {
+//    		list_head =temp.getPreviousItem();
+//    	}
 
     }
 
