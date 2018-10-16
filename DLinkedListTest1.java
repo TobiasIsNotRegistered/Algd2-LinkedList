@@ -8,7 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class DLinkedListTest1 {
-	private final int Size = 10000000;
+	private final int Size = 1000000; // 10000000
 	private IList<Integer> list1;
 	private List<Integer> list2;
 	
@@ -23,12 +23,12 @@ public class DLinkedListTest1 {
 		System.out.println("Adding");
 		Clock clock = new Clock();
 		addElements(list1, Size);
-		clock.stop();
+		clock.stop("DLinkedList");
 		System.out.println(clock);
 
 		clock.start();
 		addElements(list2, Size);
-		clock.stop();
+		clock.stop("LinkedList");
 		System.out.println(clock);
 		
 		equals();
@@ -48,7 +48,7 @@ public class DLinkedListTest1 {
 			int i = list1.get(it);
 			it = list1.next(it);
 		}
-		clock.stop();
+		clock.stop("DLinkedList");
 		System.out.println(clock);
 
 		clock.start();
@@ -56,7 +56,7 @@ public class DLinkedListTest1 {
 		while(itr.hasNext()) {
 			int i = itr.next();
 		}
-		clock.stop();
+		clock.stop("LinkedList");
 		System.out.println(clock);
 		
 		equals();
@@ -77,7 +77,7 @@ public class DLinkedListTest1 {
 			it = list1.cyclicNext(it);
 		}
 		list1.get(it);
-		clock.stop();
+		clock.stop("DLinkedList");
 		System.out.println(clock);
 
 		clock.start();
@@ -85,7 +85,7 @@ public class DLinkedListTest1 {
 		while(itr.hasNext()) {
 			int i = itr.next();
 		}
-		clock.stop();
+		clock.stop("LinkedList");
 		System.out.println(clock);
 		
 		equals();
@@ -104,7 +104,7 @@ public class DLinkedListTest1 {
 			list1.remove(it);
 			it = t;
 		}
-		clock.stop();
+		clock.stop("DLinkedList");
 		System.out.println(clock);
 
 		clock.start();
@@ -113,7 +113,7 @@ public class DLinkedListTest1 {
 			itr.next();
 			itr.remove();
 		}
-		clock.stop();
+		clock.stop("LinkedList");
 		System.out.println(clock);
 		
 		equals();
@@ -130,7 +130,7 @@ public class DLinkedListTest1 {
 		for(int i=0; i < Size; i++) {
 			list1.addBefore(tail, i);
 		}
-		clock.stop();
+		clock.stop("DLinkedList");
 		System.out.println(clock);
 		
 		clock.start();
@@ -139,7 +139,7 @@ public class DLinkedListTest1 {
 		for(int i=0; i < Size; i++) {
 			itr.add(i);
 		}
-		clock.stop();
+		clock.stop("LinkedList");
 		System.out.println(clock);
 		
 		equals();
