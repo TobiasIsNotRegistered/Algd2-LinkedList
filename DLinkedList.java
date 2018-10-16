@@ -55,7 +55,7 @@ public class DLinkedList<E> extends AbstractList<E> implements List<E>, IList<E>
     public ListItem cyclicNext(ListItem item) {
         ListItem result = null;
         //check if item exists in list (stated as precondition in iList)
-        if(get(item) != null){
+        if(item != null){
             result = item.nextItem;
             //check if nextItem exists (won't if item = tail). If not, set nextItem to head (cyclic behaviour).
             if(result == null){
@@ -174,7 +174,7 @@ public class DLinkedList<E> extends AbstractList<E> implements List<E>, IList<E>
     @Override
     public ListItem addAfter(ListItem item, E data) {
 
-    	if(get(item) != null) {
+    	if(item != null) {
     		ListItem<E> newElement = new ListItem<E>(data);
     		newElement.nextItem = item.nextItem;
     		newElement.previousItem = item;
@@ -189,7 +189,7 @@ public class DLinkedList<E> extends AbstractList<E> implements List<E>, IList<E>
     @Override
     public ListItem addBefore(ListItem item, E data) {
     	
-    	if(get(item) != null) {
+    	if(item != null) {
     		ListItem<E> newElement = new ListItem<E>(data);
     		newElement.previousItem = item.previousItem;
     		newElement.nextItem = item;
@@ -241,6 +241,18 @@ public class DLinkedList<E> extends AbstractList<E> implements List<E>, IList<E>
 
     @Override
     public void reverse() {
+    	ListItem<E> temp = null;
+    	ListItem<E> current = list_head;
+    	
+    	while(current != null) {
+    		temp =current.previousItem;
+    		current.previousItem =current.nextItem;
+    		current.nextItem = temp;
+    		current =current.previousItem;
+    	}
+    	if(temp != null) {
+    		list_head =temp.previousItem;
+    	}
 
     }
 
