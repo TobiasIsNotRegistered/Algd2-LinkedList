@@ -236,7 +236,10 @@ public class DLinkedList<E> extends AbstractList<E> implements List<E>, IList<E>
 
     @Override
     public void swap(ListItem item1, ListItem item2) {
-
+    	ListItem<E> temp = null;
+    	temp = item1;
+    	item1 = item2;
+    	item2 = temp;
     }
 
     @Override
