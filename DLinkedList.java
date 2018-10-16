@@ -190,7 +190,7 @@ public class DLinkedList<E> extends AbstractList<E> implements List<E>, IList<E>
     public ListItem addBefore(ListItem item, E data) {
     	
     	if(get(item) != null) {
-    		ListItem newElement = new ListItem(data);
+    		ListItem<E> newElement = new ListItem<E>(data);
     		newElement.previousItem = item.previousItem;
     		newElement.nextItem = item;
     		item.previousItem = newElement;
@@ -227,6 +227,10 @@ public class DLinkedList<E> extends AbstractList<E> implements List<E>, IList<E>
 
     @Override
     public void rotate(ListItem item) {
+    	if (get(item)== null) {
+    		throw new NoSuchElementException();
+    	}
+    	//TODO else...
 
     }
 
@@ -242,7 +246,7 @@ public class DLinkedList<E> extends AbstractList<E> implements List<E>, IList<E>
 
     @Override
     public void addAfter(ListItem item, List<E> list) {
-
+    	
     }
 
     @Override
