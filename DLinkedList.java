@@ -140,9 +140,22 @@ public class DLinkedList<E> extends AbstractList<E> implements List<E>, IList<E>
             throw new NoSuchElementException();
         } else {
             //swap pointers of previous & next Item
-            item.getPreviousItem().setNextItem(item.getNextItem());
-            item.getNextItem().setPreviousItem(item.getPreviousItem());
-            size--;
+        	if(this.size() != 0) {
+        	if(item.getPreviousItem() != null) {
+        		item.getPreviousItem().setNextItem(item.getNextItem());
+        		
+        	} else {
+        		//item.getNextItem().setPreviousItem(null);
+        		list_head = item.getNextItem();
+        	}
+        	if(item.getNextItem() != null) {
+        		item.getNextItem().setPreviousItem(item.getPreviousItem());
+        	} else {
+        		//item.getPreviousItem().setNextItem(null);
+        		list_tail = item.getPreviousItem();
+        	}
+            this.size--;
+        	}
         }
 
         if (next) {
