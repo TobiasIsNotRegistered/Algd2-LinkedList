@@ -193,6 +193,7 @@ public class DLinkedList<E> extends AbstractList<E> implements List<E>, IList<E>
     @Override
     public ListItem addHead(E data) {
         modCount++;
+        size++;
         ListItem<E> newElement = new ListItem<E>(data);
         newElement.setNextItem(list_head);
         list_head.setPreviousItem(newElement);
@@ -202,9 +203,11 @@ public class DLinkedList<E> extends AbstractList<E> implements List<E>, IList<E>
 
     @Override
     public ListItem addTail(E data) {
+    	size++;
         modCount++;
         ListItem<E> newElement = new ListItem<E>(data);
         newElement.setPreviousItem(list_tail);
+       // newElement.setNextItem(null);
         list_tail.setNextItem(newElement);
         list_tail = newElement;
         return newElement;
@@ -212,36 +215,54 @@ public class DLinkedList<E> extends AbstractList<E> implements List<E>, IList<E>
 
     @Override
     public ListItem addAfter(ListItem item, E data) {
-
-        if (get(item) != null) {
-            ListItem<E> newElement = new ListItem<E>(data);
-            newElement.setNextItem(item.getNextItem());
-            newElement.setPreviousItem(item);
-            item.setNextItem(newElement);
-            modCount++;
-            return newElement;
+    	if(item != null) {
+    		if (get(item) != null) {
+    		    			
+    			ListItem<E> newElement = new ListItem<E>(data);
+    			if(item == list_tail) {
+    				return addTail(data);
+    			} else {
+    				newElement.setNextItem(item.getNextItem());
+    				item.setNextItem(newElement);
+        			newElement.setPreviousItem(item);
+        			modCount++;
+        			size++;
+        			return newElement;
+    			}
+    			
+    		} else {
+    			throw new NoSuchElementException(); 
+    		}
         } else {
             return addTail(data);
+        	//return null;
         }
+    	
     }
 
 
     @Override
     public ListItem addBefore(ListItem item, E data) {
-
-        if (get(item) != null) {
-            ListItem newElement = new ListItem(data);
-            newElement.setPreviousItem(item.getPreviousItem());
-            newElement.setNextItem(item);
-            item.setPreviousItem(newElement);
-            modCount++;
-            size++;
-            return newElement;
-        } else {
-            modCount++;
-            size++;
-            return addHead(data);
-        }
+    	
+    	if(item != null) {	
+    		if (get(item) != null) {
+    			if(item == list_head) {
+    				return addHead(data);
+    			} else {
+    				ListItem newElement = new ListItem(data);
+    				newElement.setPreviousItem(item.getPreviousItem());
+    				newElement.setNextItem(item);
+    				item.setPreviousItem(newElement);
+    				modCount++;
+    				size++;
+    				return newElement;
+    			}
+    		} else {
+    			throw new NoSuchElementException(); 
+    		}
+    	} else {
+    		return addHead(data);
+    	}
     }
 
     @Override
