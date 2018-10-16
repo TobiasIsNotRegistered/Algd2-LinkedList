@@ -194,8 +194,8 @@ public class DLinkedList<E> extends AbstractList<E> implements List<E>, IList<E>
     		newElement.previousItem = item.previousItem;
     		newElement.nextItem = item;
     		item.previousItem = newElement;
-    		return newElement;
     		modCount++;
+    		return newElement;   		
     	} else {
     		return addHead(data);
     	}
