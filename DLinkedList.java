@@ -2,25 +2,27 @@ import java.util.*;
 
 public class DLinkedList<E> extends AbstractList<E> implements List<E>, IList<E> {
 
-    ListItem<E> list_head, list_tail;
+    private ListItem<E> list_head, list_tail;
     int size;
 
 
-    public DLinkedList () {
-
+    public DLinkedList() {
+        this.list_head = null;
+        this.list_tail = null;
+        size = 0;
     }
-    
+
 
     @Override
     public void add(int index, E data) {
-    	modCount++;
+        modCount++;
         ListItem newListItem = new ListItem(data);
 
-        if(this.size == 0){
+        if (this.size == 0) {
             list_head = list_tail = newListItem;
-        }else{
-            newListItem.previousItem = list_tail;
-            list_tail.nextItem = newListItem;
+        } else {
+            newListItem.setPreviousItem(list_tail);
+            list_tail.setNextItem(newListItem);
             this.list_tail = newListItem;
         }
         this.size++;
@@ -43,25 +45,30 @@ public class DLinkedList<E> extends AbstractList<E> implements List<E>, IList<E>
 
     @Override
     public ListItem next(ListItem item) {
-        return item.nextItem;
+        return item.getNextItem();
     }
 
     @Override
     public ListItem previous(ListItem item) {
-        return item.previousItem;
+        return item.getPreviousItem();
     }
 
     @Override
     public ListItem cyclicNext(ListItem item) {
         ListItem result = null;
         //check if item exists in list (stated as precondition in iList)
+<<<<<<< HEAD
         if(item != null){
             result = item.nextItem;
+=======
+        if (get(item) != null) {
+            result = item.getNextItem();
+>>>>>>> d518b2d2c4102ff376ccc000a3d6d885b475827c
             //check if nextItem exists (won't if item = tail). If not, set nextItem to head (cyclic behaviour).
-            if(result == null){
+            if (result == null) {
                 result = this.list_head;
             }
-        }else{
+        } else {
             throw new NoSuchElementException();
         }
         return result;
@@ -71,13 +78,13 @@ public class DLinkedList<E> extends AbstractList<E> implements List<E>, IList<E>
     public ListItem cyclicPrevious(ListItem item) {
         ListItem result = null;
         //check if item exists in list (stated as precondition in iList)
-        if(get(item) != null){
-            result = item.previousItem;
+        if (get(item) != null) {
+            result = item.getPreviousItem();
             //check if previousItem exists (won't if item = head). If not, set nextItem to tail (cyclic behaviour).
-            if(result == null){
+            if (result == null) {
                 result = this.list_tail;
             }
-        }else{
+        } else {
             throw new NoSuchElementException();
         }
         return result;
@@ -85,95 +92,133 @@ public class DLinkedList<E> extends AbstractList<E> implements List<E>, IList<E>
 
     /**
      * Deletes item while iterating.
-	 * If next = true: returns successor of item or null if item is the last.
-            * If next = false: returns predecessor of item or null if item is the first.
-            * Precondition: item is in this list
-     * */
+     * If next = true: returns successor of item or null if item is the last.
+     * If next = false: returns predecessor of item or null if item is the first.
+     * Precondition: item is in this list
+     */
     @Override
     public ListItem delete(ListItem item, boolean next) {
         //save pointers to be able to use them after the deletion of the item
-    	modCount ++;
-        ListItem temp_nextItem = item.nextItem;
-        ListItem temp_previousItem = item.previousItem;
+        modCount++;
+        ListItem temp_nextItem = item.getNextItem();
+        ListItem temp_previousItem = item.getPreviousItem();
         //check precondition
-        if(get(item) == null){throw new NoSuchElementException();
-        }else{
+        if (get(item) == null) {
+            throw new NoSuchElementException();
+        } else {
             //swap pointers of previous & next Item
-            item.previousItem.nextItem = item.nextItem;
-            item.nextItem.previousItem = item.previousItem;
-            //mark the item as null for GC
-            item = null;
+            if (temp_previousItem != null) {
+                temp_previousItem.setNextItem(item.getNextItem());
+            }
+            if (temp_nextItem != null) {
+                temp_nextItem.setPreviousItem(item.getPreviousItem());
+            }
+            size--;
         }
 
-        if(next){
+        if (next) {
             return temp_nextItem;
-        }else{
-            return  temp_previousItem;
+        } else {
+            return temp_previousItem;
         }
 
     }
 
+    /**
+     * Deletes item while iterating.
+     * If next = true: returns cyclic successor of item or null if item is the only list item.
+     * If next = false: returns cyclic predecessor of item or null if item is the only list item.
+     * Precondition: item is in this list
+     *
+     * @param item to be deleted
+     * @param next controls direction of cyclic iteration
+     * @return successor of item while cyclic iterating or null if list becomes empty
+     */
     @Override
     public ListItem cyclicDelete(ListItem item, boolean next) {
-    	 //save pointers to be able to use them after the deletion of the item
+        modCount++;
+        //save pointers to be able to use them after the deletion of the item
         ListItem temp_nextItem = cyclicNext(item);
         ListItem temp_previousItem = cyclicPrevious(item);
         //check precondition
-        if(get(item) == null){throw new NoSuchElementException();
-        }else{
+        if (get(item) == null) {
+            throw new NoSuchElementException();
+        } else {
             //swap pointers of previous & next Item
-            item.previousItem.nextItem = item.nextItem;
-            item.nextItem.previousItem = item.previousItem;
-            //mark the item as null for GC
-            item = null;
+        	if(this.size() != 0) {
+        	if(item.getPreviousItem() != null) {
+        		item.getPreviousItem().setNextItem(item.getNextItem());
+        		
+        	} else {
+        		//item.getNextItem().setPreviousItem(null);
+        		list_head = item.getNextItem();
+        	}
+        	if(item.getNextItem() != null) {
+        		item.getNextItem().setPreviousItem(item.getPreviousItem());
+        	} else {
+        		//item.getPreviousItem().setNextItem(null);
+        		list_tail = item.getPreviousItem();
+        	}
+            this.size--;
+        	}
         }
 
-        if(next){
+        if (next) {
             return temp_nextItem;
-        }else{
-            return  temp_previousItem;
+        } else {
+            return temp_previousItem;
         }
     }
 
+    /**
+     * Precondition: item is in this list
+     *
+     * @param item
+     * @return the contents of item
+     */
     @Override
     public E get(ListItem item) {
-        return null;
+        //TODO: UNCHECKED CAST MAY RESULT IN PROBLEMS
+        return (E) item.m_data;
     }
 
     @Override
     public void set(ListItem item, E data) {
-    	item.m_data = data;
+        item.m_data = data;
     }
 
     @Override
     public E remove(ListItem item) {
-    	ListItem<E> help = delete(item, true);
-        return help.m_data;
+        //TODO: UNCHECKED CAST MAY RESULT IN PROBLEMS
+        E temp = (E)item.m_data;
+        ListItem<E> help = delete(item, true);
+        return temp;
     }
 
     @Override
     public ListItem addHead(E data) {
-    	modCount++;
-    	ListItem<E> newElement = new ListItem<E>(data);
-    	newElement.nextItem = list_head;
-    	list_head.previousItem = newElement;
-    	list_head = newElement;
+        modCount++;
+        ListItem<E> newElement = new ListItem<E>(data);
+        newElement.setNextItem(list_head);
+        list_head.setPreviousItem(newElement);
+        list_head = newElement;
         return newElement;
     }
 
     @Override
     public ListItem addTail(E data) {
-    	modCount++;
-    	ListItem<E> newElement = new ListItem<E>(data);
-    	newElement.previousItem = list_tail;
-    	list_tail.nextItem = newElement;
-    	list_tail = newElement;
+        modCount++;
+        ListItem<E> newElement = new ListItem<E>(data);
+        newElement.setPreviousItem(list_tail);
+        list_tail.setNextItem(newElement);
+        list_tail = newElement;
         return newElement;
     }
 
     @Override
     public ListItem addAfter(ListItem item, E data) {
 
+<<<<<<< HEAD
     	if(item != null) {
     		ListItem<E> newElement = new ListItem<E>(data);
     		newElement.nextItem = item.nextItem;
@@ -184,10 +229,24 @@ public class DLinkedList<E> extends AbstractList<E> implements List<E>, IList<E>
     	} else {
     		return addTail(data);
     	}
+=======
+        if (get(item) != null) {
+            ListItem<E> newElement = new ListItem<E>(data);
+            newElement.setNextItem(item.getNextItem());
+            newElement.setPreviousItem(item);
+            item.setNextItem(newElement);
+            modCount++;
+            return newElement;
+        } else {
+            return addTail(data);
+        }
+>>>>>>> d518b2d2c4102ff376ccc000a3d6d885b475827c
     }
+
 
     @Override
     public ListItem addBefore(ListItem item, E data) {
+<<<<<<< HEAD
     	
     	if(item != null) {
     		ListItem<E> newElement = new ListItem<E>(data);
@@ -199,32 +258,54 @@ public class DLinkedList<E> extends AbstractList<E> implements List<E>, IList<E>
     	} else {
     		return addHead(data);
     	}
+=======
+
+        if (get(item) != null) {
+            ListItem newElement = new ListItem(data);
+            newElement.setPreviousItem(item.getPreviousItem());
+            newElement.setNextItem(item);
+            item.setPreviousItem(newElement);
+            modCount++;
+            size++;
+            return newElement;
+        } else {
+            modCount++;
+            size++;
+            return addHead(data);
+        }
+>>>>>>> d518b2d2c4102ff376ccc000a3d6d885b475827c
     }
 
     @Override
     public void moveToHead(ListItem item) {
-    	modCount++;
-    	if(item.parentList == this) {
-    		item.previousItem.nextItem = item.nextItem;
-    		item.nextItem.previousItem = item.previousItem;
-    		item.nextItem = list_head;
-    		list_head.previousItem = item;
-    		list_head = item;
-    	}
+        modCount++;
+        if (item.parentList == this) {
+            item.getPreviousItem().setNextItem(item.getNextItem());
+            item.getNextItem().setPreviousItem(item.getPreviousItem());
+            item.setNextItem(list_head);
+            list_head.setPreviousItem(item);
+            list_head = item;
+        }
     }
 
     @Override
     public void moveToTail(ListItem item) {
-    	modCount++;
-    	if(item.parentList == this) {
-    		item.previousItem.nextItem = item.nextItem;
-    		item.nextItem.previousItem = item.previousItem;
-    		item.previousItem = list_tail;
-    		list_tail.nextItem = item;
-    		list_tail = item;
-    	}
+        modCount++;
+        if (item.parentList == this) {
+            item.getPreviousItem().setNextItem(item.getNextItem());
+            item.getNextItem().setPreviousItem(item.getPreviousItem());
+            item.setPreviousItem(list_tail);
+            list_tail.setNextItem(item);
+            list_tail = item;
+        }
     }
 
+    /**
+     * Rotates the list until item is the new head in O(1) time.
+     * Precondition: item is in this list
+     *
+     * @param item
+     */
     @Override
     public void rotate(ListItem item) {
     	if (get(item)== null) {
@@ -284,13 +365,13 @@ public class DLinkedList<E> extends AbstractList<E> implements List<E>, IList<E>
      * Returns the iterator corresponding to the DLinkedList
      */
     public IListIterator<E> listIterator() {
-        return new DIterator<E>();
+        return new DIterator();
     }
 
     @Override
     public IListIterator<E> listIterator(int index) {
-    	DIterator<E> it = new DIterator<E>();
-    	it.m_index = index;
+        DIterator it = new DIterator();
+        it.m_index = index;
         return it;
     }
 
@@ -301,11 +382,11 @@ public class DLinkedList<E> extends AbstractList<E> implements List<E>, IList<E>
 
     @Override
     public boolean isEmpty() {
-    	if(size == 0) {
-    		return true;
-    	} else {
-    		return false;
-    	}
+        if (size == 0) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @Override
@@ -320,7 +401,15 @@ public class DLinkedList<E> extends AbstractList<E> implements List<E>, IList<E>
 
     @Override
     public Object[] toArray() {
-        return new Object[0];
+        //instantiate new array
+        Object[] temp = new Object[size()];
+        DIterator dieter = new DIterator();
+        //add next items recursively
+        for (int i = 0; i < size; i++) {
+            temp[i] = dieter.next();
+        }
+
+        return temp;
     }
 
     @Override
@@ -330,7 +419,26 @@ public class DLinkedList<E> extends AbstractList<E> implements List<E>, IList<E>
 
     @Override
     public boolean add(E e) {
-        return false;
+        ListItem newItem = new ListItem(e);
+
+        //if empty list
+        if (this.list_head == null && this.list_tail == null) {
+            modCount++;
+            this.list_head = newItem;
+            this.list_tail = this.list_head;
+            this.size++;
+            return true;
+        } else {
+            modCount++;
+            this.list_tail.setNextItem(newItem);
+            newItem.setPreviousItem(this.list_tail);
+            newItem.setNextItem(null);
+            this.list_tail = newItem;
+            size++;
+            return true;
+        }
+
+
     }
 
     @Override
@@ -397,99 +505,113 @@ public class DLinkedList<E> extends AbstractList<E> implements List<E>, IList<E>
     public List<E> subList(int fromIndex, int toIndex) {
         return null;
     }
-    
+
     /*
      * DIterator class in DLinkedList class
      */
-    public class DIterator<E> implements IListIterator<E> {
+    public class DIterator implements IListIterator<E> {
 
-    	private ListItem<E> m_returned;
-    	private ListItem<E> m_next;
-    	private ListItem<E> m_previous;
-    	private int m_index;
-    	private int m_curModCount;
-    	
-    	    	
-    	
+        private ListItem<E> m_returned;
+        private ListItem<E> m_next;
+        private ListItem<E> m_previous;
+        private int m_index;
+        private int m_curModCount;
+
+
         public DIterator() {
-			super();
-			this.m_returned = (ListItem<E>) list_head;
-			this.m_next = m_returned;
-			this.m_previous = null;
-			this.m_index = 0;
-			this.m_curModCount = modCount;
-		}
+            super();
+            this.m_returned = (ListItem<E>) list_head;
+            this.m_next = m_returned;
+            this.m_previous = null;
+            this.m_index = 0;
+            this.m_curModCount = modCount;
+        }
 
-		@Override
+        @Override
         public ListItem getVisited() {
-        	if(m_next != null || m_previous !=null) {
-        		return m_returned;
-        	} else {
-        		throw new IllegalStateException(); 
+            if (m_next != null || m_previous != null) {
+                return m_returned;
+            } else {
+                throw new IllegalStateException();
             }
         }
 
         @Override
         public boolean hasNext() {
-        	if(m_next != null) {
-        		return true;
-        	} else {
-        		return false;
-        	}
+            if (m_next != null) {
+                return true;
+            } else {
+                return false;
+            }
         }
 
+        /**
+         * Returns the next element in the list and advances the cursor position.
+         * This method may be called repeatedly to iterate through the list,
+         * or intermixed with calls to {@link #previous} to go back and forth.
+         * (Note that alternating calls to {@code next} and {@code previous}
+         * will return the same element repeatedly.)
+         *
+         * @return the next element in the list
+         * @throws NoSuchElementException if the iteration has no next element
+         */
         @Override
         public E next() {
-        	m_index++;
-        	m_previous = m_returned;
-        	m_returned = m_next;
-        	m_next = m_returned.nextItem;
-            return m_returned.m_data;
+            if(hasNext()) {
+                m_index++;
+                m_previous = m_returned;
+                m_returned = m_next;
+                m_next = m_returned.getNextItem();
+                return m_returned.m_data;
+            }
+            else {
+                throw new NoSuchElementException();
+            }
         }
 
         @Override
         public boolean hasPrevious() {
-        	if(m_previous != null) {
-        		return true;
-        	} else {
-        		return false;
-        	}
+            if (m_previous != null) {
+                return true;
+            } else {
+                return false;
+            }
         }
 
         @Override
-        public E previous() {           
+        public E previous() {
             m_index--;
-        	m_next = m_returned;
-        	m_returned = m_previous;
-        	m_previous = m_returned.previousItem;
+            m_next = m_returned;
+            m_returned = m_previous;
+            m_previous = m_returned.getPreviousItem();
             return m_returned.m_data;
         }
 
         @Override
         public int nextIndex() {
-        	if(m_index == size) {
-        		return size;
-        	}
-            return m_index +1;
+            if (m_index == size) {
+                return size;
+            }
+            return m_index + 1;
         }
 
         @Override
         public int previousIndex() {
-        	if(m_index == 0) {
-        		return -1;
-        	}
-            return m_index -1;
+            if (m_index == 0) {
+                return -1;
+            }
+            return m_index - 1;
         }
 
         @Override
         public void remove() {
-        	//checks if Iterator still useful is
+            //checks if Iterator still useful is
             if (m_curModCount != modCount) throw new ConcurrentModificationException();
             if (m_returned == null) {
                 throw new IllegalStateException();
             } else {
                 if (m_returned == m_next) {
-                    m_next = m_returned.nextItem;
+                    m_next = m_returned.getNextItem();
                 } else {
                     m_index--;
                 }
@@ -510,13 +632,13 @@ public class DLinkedList<E> extends AbstractList<E> implements List<E>, IList<E>
 
         @Override
         public void add(E o) {
-        	if (m_curModCount != modCount) throw new ConcurrentModificationException();
-              
-                m_index++;
-                m_next = DLinkedList.this.addAfter(m_previous, o);
-                m_curModCount++; 
+            if (m_curModCount != modCount) throw new ConcurrentModificationException();
+
+            m_index++;
+            m_next = DLinkedList.this.addAfter(m_previous, o);
+            m_curModCount++;
         }
     }
 
-    
+
 }

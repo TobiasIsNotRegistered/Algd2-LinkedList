@@ -6,6 +6,7 @@ public class Clock {
     long start;
     long end;
     long duration;
+    String msg;
 
     public Clock() {
         start = System.currentTimeMillis();
@@ -15,6 +16,11 @@ public class Clock {
         end = System.currentTimeMillis();
     }
 
+    public void stop(String log_msg) {{
+        end = System.currentTimeMillis();
+        this.msg = log_msg;
+    }}
+
     public void start(){
         start = System.currentTimeMillis();
     }
@@ -22,7 +28,7 @@ public class Clock {
     @Override
     public String toString() {
         duration = end - start;
-        return "duration in ms: " +  Long.toString(duration);
+        return msg + " | duration in ms: " +  Long.toString(duration);
     }
 
 }
