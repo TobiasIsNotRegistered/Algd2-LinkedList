@@ -12,18 +12,49 @@ public class DLinkedList<E> extends AbstractList<E> implements List<E>, IList<E>
         size = 0;
     }
 
+    @Override
+    public boolean add(E data){
+        ListItem newItem = new ListItem(data);
+        if(list_head == null){
+            list_head = newItem;
+            list_tail = list_head;
+        }else{
+            list_tail.setNextItem(newItem);
+            newItem.setPreviousItem(list_tail);
+            list_tail = newItem;
+        }
+        size ++;
+        return true;
+    }
 
     @Override
     public void add(int index, E data) {
+
+        if(index < 0 || index > size){
+            throw new IndexOutOfBoundsException();
+        }
+
         modCount++;
         ListItem newListItem = new ListItem(data);
 
-        if (this.size == 0) {
+        if(index == 0){
+            addHead(data);
+        }else if (this.size == 0) {
             list_head = list_tail = newListItem;
-        } else {
-            newListItem.setPreviousItem(list_tail);
-            list_tail.setNextItem(newListItem);
-            this.list_tail = newListItem;
+        } else if (index == size) {
+                add(data);
+        }else {
+            ListItem currentItem = list_head;
+            for(int i = 0; i<index; i++){
+                currentItem = currentItem.getNextItem();
+            }
+
+            ListItem previousItem = currentItem.getPreviousItem();
+
+            previousItem.setNextItem(newListItem);
+            newListItem.setPreviousItem(previousItem);
+            newListItem.setNextItem(currentItem);
+            currentItem.setPreviousItem(newListItem);
         }
         this.size++;
     }
@@ -94,7 +125,7 @@ public class DLinkedList<E> extends AbstractList<E> implements List<E>, IList<E>
     @Override
     public ListItem delete(ListItem item, boolean next) {
         //save pointers to be able to use them after the deletion of the item
-        modCount++;
+
         ListItem temp_nextItem = item.getNextItem();
         ListItem temp_previousItem = item.getPreviousItem();
         //check precondition
@@ -103,12 +134,15 @@ public class DLinkedList<E> extends AbstractList<E> implements List<E>, IList<E>
         } else {
             //swap pointers of previous & next Item
             if (temp_previousItem != null) {
-                temp_previousItem.setNextItem(item.getNextItem());
+                item.getPreviousItem().setNextItem(item.getNextItem());
             }
             if (temp_nextItem != null) {
-                temp_nextItem.setPreviousItem(item.getPreviousItem());
+                item.getNextItem().setPreviousItem(item.getPreviousItem());
             }
+            modCount++;
             size--;
+            item.setPreviousItem(null);
+            item.setNextItem(null);
         }
 
         if (next) {
@@ -140,22 +174,22 @@ public class DLinkedList<E> extends AbstractList<E> implements List<E>, IList<E>
             throw new NoSuchElementException();
         } else {
             //swap pointers of previous & next Item
-        	if(this.size() != 0) {
-        	if(item.getPreviousItem() != null) {
-        		item.getPreviousItem().setNextItem(item.getNextItem());
-        		
-        	} else {
-        		//item.getNextItem().setPreviousItem(null);
-        		list_head = item.getNextItem();
-        	}
-        	if(item.getNextItem() != null) {
-        		item.getNextItem().setPreviousItem(item.getPreviousItem());
-        	} else {
-        		//item.getPreviousItem().setNextItem(null);
-        		list_tail = item.getPreviousItem();
-        	}
-            this.size--;
-        	}
+            if (this.size() != 0) {
+                if (item.getPreviousItem() != null) {
+                    item.getPreviousItem().setNextItem(item.getNextItem());
+
+                } else {
+                    //item.getNextItem().setPreviousItem(null);
+                    list_head = item.getNextItem();
+                }
+                if (item.getNextItem() != null) {
+                    item.getNextItem().setPreviousItem(item.getPreviousItem());
+                } else {
+                    //item.getPreviousItem().setNextItem(null);
+                    list_tail = item.getPreviousItem();
+                }
+                this.size--;
+            }
         }
 
         if (next) {
@@ -182,32 +216,48 @@ public class DLinkedList<E> extends AbstractList<E> implements List<E>, IList<E>
         item.m_data = data;
     }
 
+    /**
+     * Deletes the item and returns its contents.
+     * Precondition: item is in this list
+     * @param item
+     * @return contents of the removed item
+     */
     @Override
     public E remove(ListItem item) {
+        //precondition
+        if(!contains(item)){throw new NoSuchElementException();}
+
         //TODO: UNCHECKED CAST MAY RESULT IN PROBLEMS
-        E temp = (E)item.m_data;
-        ListItem<E> help = delete(item, true);
+        E temp = (E) item.m_data;
+        delete(item, true);
         return temp;
     }
 
     @Override
     public ListItem addHead(E data) {
-        modCount++;
-        size++;
-        ListItem<E> newElement = new ListItem<E>(data);
-        newElement.setNextItem(list_head);
-        list_head.setPreviousItem(newElement);
-        list_head = newElement;
-        return newElement;
+
+        if(size==0){
+            list_head = list_tail = new ListItem<>(data);
+            return list_head;
+        }else {
+
+            modCount++;
+            size++;
+            ListItem<E> newElement = new ListItem<E>(data);
+            newElement.setNextItem(list_head);
+            list_head.setPreviousItem(newElement);
+            list_head = newElement;
+            return newElement;
+        }
     }
 
     @Override
     public ListItem addTail(E data) {
-    	size++;
+        size++;
         modCount++;
         ListItem<E> newElement = new ListItem<E>(data);
         newElement.setPreviousItem(list_tail);
-       // newElement.setNextItem(null);
+        // newElement.setNextItem(null);
         list_tail.setNextItem(newElement);
         list_tail = newElement;
         return newElement;
@@ -215,54 +265,62 @@ public class DLinkedList<E> extends AbstractList<E> implements List<E>, IList<E>
 
     @Override
     public ListItem addAfter(ListItem item, E data) {
-    	if(item != null) {
-    		if (get(item) != null) {
-    		    			
-    			ListItem<E> newElement = new ListItem<E>(data);
-    			if(item == list_tail) {
-    				return addTail(data);
-    			} else {
-    				newElement.setNextItem(item.getNextItem());
-    				item.setNextItem(newElement);
-        			newElement.setPreviousItem(item);
-        			modCount++;
-        			size++;
-        			return newElement;
-    			}
-    			
-    		} else {
-    			throw new NoSuchElementException(); 
-    		}
+        if (item != null) {
+            if (get(item) != null) {
+
+                ListItem<E> newElement = new ListItem<E>(data);
+                if (item == list_tail) {
+                    return addTail(data);
+                } else {
+                    newElement.setNextItem(item.getNextItem());
+                    item.setNextItem(newElement);
+                    newElement.setPreviousItem(item);
+                    modCount++;
+                    size++;
+                    return newElement;
+                }
+
+            } else {
+                throw new NoSuchElementException();
+            }
         } else {
             return addTail(data);
-        	//return null;
+            //return null;
         }
-    	
+
     }
 
+    /**
+     * Inserts a new list item with given data before item and returns the new item.
+     * Precondition: item is in this list or null
+     *
+     * @param item can be null
+     * @param data
+     * @return inserted item
+     */
 
     @Override
     public ListItem addBefore(ListItem item, E data) {
-    	
-    	if(item != null) {	
-    		if (get(item) != null) {
-    			if(item == list_head) {
-    				return addHead(data);
-    			} else {
-    				ListItem newElement = new ListItem(data);
-    				newElement.setPreviousItem(item.getPreviousItem());
-    				newElement.setNextItem(item);
-    				item.setPreviousItem(newElement);
-    				modCount++;
-    				size++;
-    				return newElement;
-    			}
-    		} else {
-    			throw new NoSuchElementException(); 
-    		}
-    	} else {
-    		return addHead(data);
-    	}
+
+        if (item != null) {
+            if (get(item) != null) {
+                if (item == list_head) {
+                    return addHead(data);
+                } else {
+                    ListItem newElement = new ListItem(data);
+                    newElement.setPreviousItem(item.getPreviousItem());
+                    newElement.setNextItem(item);
+                    item.setPreviousItem(newElement);
+                    modCount++;
+                    size++;
+                    return newElement;
+                }
+            } else {
+                throw new NoSuchElementException();
+            }
+        } else {
+            return addHead(data);
+        }
     }
 
     @Override
@@ -359,16 +417,30 @@ public class DLinkedList<E> extends AbstractList<E> implements List<E>, IList<E>
         }
     }
 
+    /*
     @Override
     public boolean contains(Object o) {
-        return false;
+        boolean success = false;
+        ListItem current = list_head;
+
+        for(int i = 0; i<size; i++){
+            current = current.getNextItem();
+            if(current != null && current.m_data.equals((E)o)){
+                success = true;
+                return success;
+            }
+        }
+
+        return success;
     }
+    */
 
     @Override
     public Iterator<E> iterator() {
         return this.listIterator();
     }
 
+    /*
     @Override
     public Object[] toArray() {
         //instantiate new array
@@ -376,17 +448,16 @@ public class DLinkedList<E> extends AbstractList<E> implements List<E>, IList<E>
         DIterator dieter = new DIterator();
         //add next items recursively
         for (int i = 0; i < size; i++) {
-            temp[i] = dieter.next();
+            if (dieter.hasNext()) {
+                temp[i] = dieter.next();
+            }
         }
 
         return temp;
     }
+    */
 
-    @Override
-    public <T> T[] toArray(T[] a) {
-        return null;
-    }
-
+    /*
     @Override
     public boolean add(E e) {
         ListItem newItem = new ListItem(e);
@@ -407,74 +478,27 @@ public class DLinkedList<E> extends AbstractList<E> implements List<E>, IList<E>
             size++;
             return true;
         }
+            }
+    */
 
-
-    }
-
-    @Override
-    public boolean remove(Object o) {
-        return false;
-    }
-
-    @Override
-    public boolean containsAll(Collection<?> c) {
-        return false;
-    }
-
-    @Override
-    public boolean addAll(Collection<? extends E> c) {
-        return false;
-    }
-
-    @Override
-    public boolean addAll(int index, Collection<? extends E> c) {
-        return false;
-    }
-
-    @Override
-    public boolean removeAll(Collection<?> c) {
-        return false;
-    }
-
-    @Override
-    public boolean retainAll(Collection<?> c) {
-        return false;
-    }
-
-    @Override
-    public void clear() {
-
-    }
 
     @Override
     public E get(int index) {
-        return null;
+
+        //precondition
+        if (index < 0 || index > size) {
+            throw new IndexOutOfBoundsException();
+        }
+
+        //cycle to index recursively
+        ListItem current = list_head;
+        for (int i = 0; i == index; i++) {
+            current = current.getNextItem();
+        }
+
+        return (E) current.m_data;
     }
 
-    @Override
-    public E set(int index, E element) {
-        return null;
-    }
-
-    @Override
-    public E remove(int index) {
-        return null;
-    }
-
-    @Override
-    public int indexOf(Object o) {
-        return 0;
-    }
-
-    @Override
-    public int lastIndexOf(Object o) {
-        return 0;
-    }
-
-    @Override
-    public List<E> subList(int fromIndex, int toIndex) {
-        return null;
-    }
 
     /*
      * DIterator class in DLinkedList class
@@ -527,14 +551,13 @@ public class DLinkedList<E> extends AbstractList<E> implements List<E>, IList<E>
          */
         @Override
         public E next() {
-            if(hasNext()) {
+            if (hasNext()) {
                 m_index++;
                 m_previous = m_returned;
                 m_returned = m_next;
                 m_next = m_returned.getNextItem();
                 return m_returned.m_data;
-            }
-            else {
+            } else {
                 throw new NoSuchElementException();
             }
         }

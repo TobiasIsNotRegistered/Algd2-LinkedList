@@ -6,7 +6,7 @@ public class Clock {
     long start;
     long end;
     long duration;
-    String msg;
+    String msg ="unknown source";
 
     public Clock() {
         start = System.currentTimeMillis();
