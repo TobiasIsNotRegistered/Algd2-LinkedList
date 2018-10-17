@@ -1,4 +1,4 @@
-import sun.plugin.dom.exception.NoModificationAllowedException;
+//import sun.plugin.dom.exception.NoModificationAllowedException;
 
 public class ListItem<E> {
 

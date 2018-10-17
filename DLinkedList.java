@@ -193,6 +193,7 @@ public class DLinkedList<E> extends AbstractList<E> implements List<E>, IList<E>
     @Override
     public ListItem addHead(E data) {
         modCount++;
+        size++;
         ListItem<E> newElement = new ListItem<E>(data);
         newElement.setNextItem(list_head);
         list_head.setPreviousItem(newElement);
@@ -202,9 +203,11 @@ public class DLinkedList<E> extends AbstractList<E> implements List<E>, IList<E>
 
     @Override
     public ListItem addTail(E data) {
+    	size++;
         modCount++;
         ListItem<E> newElement = new ListItem<E>(data);
         newElement.setPreviousItem(list_tail);
+       // newElement.setNextItem(null);
         list_tail.setNextItem(newElement);
         list_tail = newElement;
         return newElement;
@@ -212,34 +215,53 @@ public class DLinkedList<E> extends AbstractList<E> implements List<E>, IList<E>
 
     @Override
     public ListItem addAfter(ListItem item, E data) {
-        if (get(item) != null) {
-            ListItem<E> newElement = new ListItem<E>(data);
-            newElement.setNextItem(item.getNextItem());
-            newElement.setPreviousItem(item);
-            item.setNextItem(newElement);
-            modCount++;
-            return newElement;
+    	if(item != null) {
+    		if (get(item) != null) {
+    		    			
+    			ListItem<E> newElement = new ListItem<E>(data);
+    			if(item == list_tail) {
+    				return addTail(data);
+    			} else {
+    				newElement.setNextItem(item.getNextItem());
+    				item.setNextItem(newElement);
+        			newElement.setPreviousItem(item);
+        			modCount++;
+        			size++;
+        			return newElement;
+    			}
+    			
+    		} else {
+    			throw new NoSuchElementException(); 
+    		}
         } else {
             return addTail(data);
-        }
+        	//return null;
+        }    	
     }
 
 
     @Override
-    public ListItem addBefore(ListItem item, E data) {
-        if (get(item) != null) {
-            ListItem newElement = new ListItem(data);
-            newElement.setPreviousItem(item.getPreviousItem());
-            newElement.setNextItem(item);
-            item.setPreviousItem(newElement);
-            modCount++;
-            size++;
-            return newElement;
-        } else {
-            modCount++;
-            size++;
-            return addHead(data);
-        }
+    public ListItem addBefore(ListItem item, E data) {  	
+    	if(item != null) {	
+    		if (get(item) != null) {
+    			if(item == list_head) {
+    				return addHead(data);
+    			} else {
+    				ListItem newElement = new ListItem(data);
+    				newElement.setPreviousItem(item.getPreviousItem());
+    				newElement.setNextItem(item);
+    				item.setPreviousItem(newElement);
+    				modCount++;
+    				size++;
+    				return newElement;
+    			}
+    		} else {
+    			throw new NoSuchElementException(); 
+    		}
+    	} else {
+    		return addHead(data);
+    	}
+
     }
 
     @Override
@@ -283,8 +305,10 @@ public class DLinkedList<E> extends AbstractList<E> implements List<E>, IList<E>
 
     @Override
     public void swap(ListItem item1, ListItem item2) {
+    	if(item1.equals(item2)) return;
+    	
     	ListItem<E> temp = null;
-    	//TODO change pointer to new objects
+    	
     	temp = item1;
     	item1 = item2;
     	item2 = temp;
@@ -292,18 +316,23 @@ public class DLinkedList<E> extends AbstractList<E> implements List<E>, IList<E>
 
     @Override
     public void reverse() {
-    	ListItem<E> temp = null;
+    	//TODO if list is empty return
+    	
+    	ListItem<E> temp = null, tempPrev=null, tempNext =null;
     	ListItem<E> current = list_head;
     	
-//    	while(current != null) {
-//    		temp =current.getPreviousItem();
-//    		current.getPreviousItem() =current.getNextItem();
-//    		current.getNextItem() = temp;
-//    		current =current.getPreviousItem();
-//    	}
-//    	if(temp != null) {
-//    		list_head =temp.getPreviousItem();
-//    	}
+    	tempPrev =current.getPreviousItem();
+		tempNext = current.getNextItem();
+    	
+    	while(current != null) {    		
+    		temp =current.getPreviousItem();
+    		tempPrev =current.getNextItem();
+    		tempNext = temp;
+    		current =current.getPreviousItem();
+    	}
+    	if(temp != null) {
+    		list_head =temp.getPreviousItem();
+    	}
 
     }
 
