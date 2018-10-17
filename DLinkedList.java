@@ -307,11 +307,11 @@ public class DLinkedList<E> extends AbstractList<E> implements List<E>, IList<E>
             while (current.getNextItem() != null && current.getNextItem() !=item) 
                 current = current.getNextItem(); 
     	}
-//    	list_tail.getNextItem() = list_head;
-//    	list_head = current.getNextItem();
-//    	list_head.getPreviousItem() = null;
-//    	list_tail = current;
-//    	list_tail.getNextItem() = null;
+    	list_tail.setNextItem(list_head);
+    	list_head = current.getNextItem();
+    	list_head.setPreviousItem(null);
+    	list_tail = current;
+    	list_tail.setNextItem(null);
     }
 
     @Override
