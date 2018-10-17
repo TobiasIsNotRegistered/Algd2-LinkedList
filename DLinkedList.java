@@ -296,11 +296,22 @@ public class DLinkedList<E> extends AbstractList<E> implements List<E>, IList<E>
      */
     @Override
     public void rotate(ListItem item) {
+    	ListItem<E> current = list_head;
+    	
     	if (get(item)== null) {
     		throw new NoSuchElementException();
+    	}    	
+    	else {
+    		if (current == null) 
+                return; 
+            while (current.getNextItem() != null && current.getNextItem() !=item) 
+                current = current.getNextItem(); 
     	}
-    	//TODO else...
-
+//    	list_tail.getNextItem() = list_head;
+//    	list_head = current.getNextItem();
+//    	list_head.getPreviousItem() = null;
+//    	list_tail = current;
+//    	list_tail.getNextItem() = null;
     }
 
     @Override
@@ -316,7 +327,7 @@ public class DLinkedList<E> extends AbstractList<E> implements List<E>, IList<E>
 
     @Override
     public void reverse() {
-    	//TODO if list is empty return
+    	if (size == 0 || size == 1)  return;
     	
     	ListItem<E> temp = null, tempPrev=null, tempNext =null;
     	ListItem<E> current = list_head;
