@@ -7,12 +7,15 @@ public class ListItem<E> {
     E m_data;
 
     DLinkedList parentList;
-
+    
+    
     public ListItem(E data){
         this.m_data = data;
     }
+    
 
-    public ListItem getNextItem() {
+
+	public ListItem getNextItem() {
         return nextItem;
     }
 

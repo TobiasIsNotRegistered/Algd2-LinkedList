@@ -23,6 +23,7 @@ public class DLinkedList<E> extends AbstractList<E> implements List<E>, IList<E>
             newItem.setPreviousItem(list_tail);
             list_tail = newItem;
         }
+        modCount++;
         size ++;
         return true;
     }
@@ -42,7 +43,7 @@ public class DLinkedList<E> extends AbstractList<E> implements List<E>, IList<E>
         }else if (this.size == 0) {
             list_head = list_tail = newListItem;
         } else if (index == size) {
-                add(data);
+                addTail(data);
         }else {
             ListItem currentItem = list_head;
             for(int i = 0; i<index; i++){
@@ -227,8 +228,8 @@ public class DLinkedList<E> extends AbstractList<E> implements List<E>, IList<E>
         //precondition
         if(!contains(item)){throw new NoSuchElementException();}
 
-        //TODO: UNCHECKED CAST MAY RESULT IN PROBLEMS
-        E temp = (E) item.m_data;
+        ListItem<E> help = item;
+        E temp = help.m_data;
         delete(item, true);
         return temp;
     }
