@@ -241,38 +241,6 @@ public class DLinkedList<E> extends AbstractList<E> implements List<E>, IList<E>
 		delete(item, true);
 		return temp;
 
-		/*     if (this.size == 1 && this.list_head.m_data.equals(item)) {
-            this.list_head = this.list_tail = null; // removing only item from list
-            this.size--;
-            //return (E) item.m_data;
-        }
-        if (this.list_head.m_data.equals(item)) { // removing head
-            this.list_head = this.list_head.getNextItem();
-            this.list_head.setPreviousItem(null);
-            this.size--;
-            //return (E) item.m_data;
-        }
-        if (this.list_tail.m_data.equals(item)) { // removing tail
-            this.list_tail = this.list_tail.getPreviousItem();
-            this.list_tail.setNextItem(null);
-            this.size--;
-            //return (E) item.m_data;
-        }
-
-        //TODO change: to while-loop and with iterator instatt of object previous,next
-        ListItem<E> current;
-        for (current = this.list_head; current != null; current = current.getNextItem()) {
-            if (current.equals(item)) {
-//            	ListItem<E> previous = current.getPreviousItem();
-//            	ListItem<E> next = current.getNextItem();
-//                previous.setNextItem(next);
-//                next.setPreviousItem(previous);
-
-                this.size--;
-                //return (E) item.m_data;
-            }
-        }
-		return (E) item.m_data;*/
 	}
 
 	@Override
